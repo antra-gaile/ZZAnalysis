@@ -43,7 +43,8 @@ if not IsMC:
 
 process.source.fileNames = cms.untracked.vstring(
 ### UL - 2017 sync files
-'/store/mc/RunIISummer20UL17MiniAOD/GluGluHToZZTo4L_M125_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8/MINIAODSIM/106X_mc2017_realistic_v6-v2/270000/794448BF-6D5B-7149-90C7-2F7D0F3E1DA6.root',
+'/store/mc/RunIISummer20UL17MiniAOD/GluGluHToZZTo4L_M125_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8/MINIAODSIM/106X_mc2017_realistic_v6-v2/270000/D7829B03-0C82-CE4C-9460-96CECD138AF9.root'
+#'/store/mc/RunIISummer20UL17MiniAOD/GluGluHToZZTo4L_M125_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8/MINIAODSIM/106X_mc2017_realistic_v6-v2/270000/794448BF-6D5B-7149-90C7-2F7D0F3E1DA6.root',
 )
 
 process.calibratedMuons.isSynchronization = cms.bool(True)
