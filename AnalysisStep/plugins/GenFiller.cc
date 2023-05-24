@@ -210,7 +210,7 @@ void GenFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetup){
                   if ( (*packedgenParticles)[k].mother(m)->pdgId() == genPart->pdgId() ) idmatch=true;
               }
               if (!idmatch) continue;
-              if(this_dR_lgamma<0.3) {
+              if(this_dR_lgamma<0.1) {
                   gen_fsrset.insert(k);
                   TLorentzVector gamma;
                   gamma.SetPtEtaPhiE((*packedgenParticles)[k].pt(),(*packedgenParticles)[k].eta(),(*packedgenParticles)[k].phi(),(*packedgenParticles)[k].energy());
@@ -330,9 +330,7 @@ void GenFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetup){
       TLorentzVector thisLep;
       thisLep.SetPtEtaPhiM(Lepts.at(i).Pt(),Lepts.at(i).Eta(),Lepts.at(i).Phi(),Lepts.at(i).M());
 
-      if ( ( (abs(LeptsId.at(i)) == 13 && thisLep.Pt() > 5.0 && abs(thisLep.Eta()) < 2.4)
-             || (abs(LeptsId.at(i)) == 11 && thisLep.Pt() > 7.0 && abs(thisLep.Eta()) < 2.5) )
-           && Lepts_RelIso.at(i)<0.35) {
+      if ( thisLep.P() > 4.0 ) { // from Pt to P
           nFiducialLeptons++;
           if (thisLep.Pt()>20) nFiducialPtLead++;
           if (thisLep.Pt()>10) nFiducialPtSublead++;
@@ -340,7 +338,7 @@ void GenFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetup){
   }
 
   unsigned int L1=99; unsigned int L2=99; unsigned int L3=99; unsigned int L4=99;
-  if (nFiducialLeptons>=4 && nFiducialPtLead>=1 && nFiducialPtSublead>=2) {
+  if (nFiducialLeptons>=4 ) {
 
       // START FIDUCIAL EVENT TOPOLOGY CUTS
       // unsigned int L1=99; unsigned int L2=99; unsigned int L3=99; unsigned int L4=99;
@@ -397,15 +395,15 @@ void GenFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetup){
               TLorentzVector mll = li+lj;
 
               if(LeptsId[i]*LeptsId[j]<0) {
-                  if(mll.M()<=4) { passedMassOS = false; break; }
+                  if(mll.M()<=5) { passedMassOS = false; break; }
               }
 
               if(abs(LeptsId[i]) != abs(LeptsId[j])) {
                   double deltaR = li.DeltaR(lj);
-                  if(deltaR<=0.02) { passedElMuDeltaR = false; break; }
+                  if(deltaR<=0.1) { passedElMuDeltaR = false; break; }
               }
               double deltaRll = li.DeltaR(lj);
-              if(deltaRll<=0.02) { passedDeltaR = false; break; }
+              if(deltaRll<=0.1) { passedDeltaR = false; break; }
           }
       }
       if(passedMassOS==false || passedElMuDeltaR==false || passedDeltaR==false) passedFiducial=false;
@@ -538,13 +536,8 @@ bool GenFiller::mZ1_mZ2(unsigned int& L1, unsigned int& L2, unsigned int& L3, un
 
 
             if (makeCuts) {
-                if ( abs(LeptsId[i]) == 13 && (li.Pt() < 5.0 || abs(li.Eta()) > 2.4)) continue;
-                if ( abs(LeptsId[i]) == 11 && (li.Pt() < 7.0 || abs(li.Eta()) > 2.5)) continue;
-                if ( Lepts_RelIso[i]>0.35) continue;
-
-                if ( abs(LeptsId[j]) == 13 && (lj.Pt() < 5.0 || abs(lj.Eta()) > 2.4)) continue;
-                if ( abs(LeptsId[j]) == 11 && (lj.Pt() < 7.0 || abs(lj.Eta()) > 2.5)) continue;
-                if ( Lepts_RelIso[j]>0.35) continue;
+                if ( li.P() < 4.0 ) continue;
+                if ( lj.P() < 4.0 ) continue;
             }
 
             TLorentzVector mll = li+lj;
@@ -561,7 +554,7 @@ bool GenFiller::mZ1_mZ2(unsigned int& L1, unsigned int& L2, unsigned int& L3, un
     l2.SetPtEtaPhiM(Lepts[L2].Pt(),Lepts[L2].Eta(),Lepts[L2].Phi(),Lepts[L2].M());
     TLorentzVector ml1l2 = l1+l2;
 
-    if(ml1l2.M()>40 && ml1l2.M()<120 && findZ1) passZ1 = true;
+    if(ml1l2.M()>50 && ml1l2.M()<106 && findZ1) passZ1 = true;
     if (!makeCuts) passZ1 = true;
 
     double pTL34 = 0.0; bool findZ2 = false;
@@ -580,19 +573,14 @@ bool GenFiller::mZ1_mZ2(unsigned int& L1, unsigned int& L2, unsigned int& L3, un
             TLorentzVector Z2 = li+lj;
 
             if (makeCuts) {
-                if ( abs(LeptsId[i]) == 13 && (li.Pt() < 5.0 || abs(li.Eta()) > 2.4)) continue;
-                if ( abs(LeptsId[i]) == 11 && (li.Pt() < 7.0 || abs(li.Eta()) > 2.5)) continue;
-                if ( Lepts_RelIso[i]>0.35) continue;
-
-                if ( abs(LeptsId[j]) == 13 && (lj.Pt() < 5.0 || abs(lj.Eta()) > 2.4)) continue;
-                if ( abs(LeptsId[j]) == 11 && (lj.Pt() < 7.0 || abs(lj.Eta()) > 2.5)) continue;
-                if ( Lepts_RelIso[j]>0.35) continue;
+                if ( li.P() < 4.0 ) continue;
+                if ( lj.P() < 4.0 ) continue;
             }
 
             if ( (li.Pt()+lj.Pt())>=pTL34 ) {
                 double mZ2 = Z2.M();
                 // if (verbose) cout<<"_GEN mZ2: "<<mZ2<<endl;
-                if( (mZ2>12 && mZ2<120) || (!makeCuts) ) {
+                if( (mZ2>12 && mZ2<115) || (!makeCuts) ) {
                     L3 = i; L4 = j; findZ2 = true;
                     pTL34 = li.Pt()+lj.Pt();
                     // if (verbose) cout<<"is the new _GEN cand"<<endl;
