@@ -14,7 +14,7 @@ from ZZAnalysis.NanoAnalysis.lepFiller import *
 from ZZAnalysis.NanoAnalysis.jetFiller import *
 from ZZAnalysis.NanoAnalysis.ZZFiller import *
 from ZZAnalysis.NanoAnalysis.ZZExtraFiller import *
-
+from ZZAnalysis.NanoAnalysis.catFiller import *
 
 ### Get processing customizations, if defined in the including .py; use defaults otherwise 
 DEBUG = getConf("DEBUG", False)
@@ -90,7 +90,7 @@ cuts = dict(
 
 
 ### Preselection to speed up processing. Note: to be relaxed for CRs
-preselection = getConf("preselection", "nMuon + nElectron >= 4 &&" +
+preselection = getConf("preselection", "(nMuon + nElectron) >= 2 &&" +
                        "Sum$(Muon_pt > {muPt}-2.) +" + # Allow for variations due to scale calib
                        "Sum$(Electron_pt > {elePt})" +
                        ">= 4").format(**cuts)
@@ -127,6 +127,7 @@ ZZSequence.extend([lepFiller(cuts, LEPTON_SETUP), # FSR and FSR-corrected iso; f
                    ZZFiller(runMELA, bestCandByMELA, IsMC, LEPTON_SETUP, PROCESS_CR, debug=DEBUG), # Build ZZ candidates; choose best candidate; filter events with candidates
                    jetFiller(), # Jets cleaning with leptons
                    ZZExtraFiller('SR'),
+                   catFiller(debug=DEBUG),
 #                  MELAFiller(), # Compute the full set of discriminants for the best candidate
                    ])
 

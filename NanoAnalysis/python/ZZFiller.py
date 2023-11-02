@@ -235,7 +235,7 @@ class ZZFiller(Module):
 
 
         ### Build ZZ and ZLL combinations passing the ZZ selection
-        if len(Zs) >= 2:
+        if len(Zs) >= 0:#2
             ZZs = []
             bestCandIdx = -1
 
@@ -309,7 +309,7 @@ class ZZFiller(Module):
                     ZZs = []
 
             ### Skip events with no candidates
-            if len(ZZs) == 0 and len(ZLLs) == 0: return False
+            #if len(ZZs) == 0 and len(ZLLs) == 0: return False
 
             ### Now fill the variables to be stored as output
             # Fill Zs - we are only interested in signal ones
@@ -471,7 +471,7 @@ class ZZFiller(Module):
 
             return True
 
-        return False # No candidate found, do not write the event.
+        return  False # No candidate found, do not write the event.
 
 
     # Temporary class to store information on a ZZ candidate.
